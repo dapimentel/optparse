@@ -394,9 +394,11 @@ optparse_long(struct optparse *options,
                     return optparse_error(options, OPTPARSE_MSG_MISSING, name);
                 else
                     options->optind++;
+#ifdef IMPROVED_OPTPARSE_OPTIONAL
             } else if (longopts[i].argtype == OPTPARSE_OPTIONAL) {
                 if (next && next[0] != '-')
                     options->optarg = options->argv[options->optind++];
+#endif
             }
             return options->optopt;
         }
