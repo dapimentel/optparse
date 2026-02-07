@@ -348,6 +348,7 @@ optparse_long(struct optparse *options,
               int *longindex)
 {
     int i;
+    char *next;
     char *option = options->argv[options->optind];
     if (option == 0) {
         return -1;
@@ -373,6 +374,7 @@ optparse_long(struct optparse *options,
     options->optopt = 0;
     options->optarg = 0;
     option += 2; /* skip "--" */
+    next = options->argv[options->optind + 1];
     options->optind++;
     for (i = 0; !optparse_longopts_end(longopts, i); i++) {
         const char *name = longopts[i].longname;
@@ -392,6 +394,9 @@ optparse_long(struct optparse *options,
                     return optparse_error(options, OPTPARSE_MSG_MISSING, name);
                 else
                     options->optind++;
+            } else if (longopts[i].argtype == OPTPARSE_OPTIONAL) {
+                if (next && next[0] != '-')
+                    options->optarg = options->argv[options->optind++];
             }
             return options->optopt;
         }
